@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+</head>
+<body>
+    <div id="display"></div>
+    <script>
+        
+    const MY_SERVER= "http://127.0.0.1:8000/student/"
+    const IMG_SRV= "http://127.0.0.1:8000/"
+
+    axios.get(MY_SERVER).then(res => console.log(res.data));
+    
+    function displayImage(src, width, height) {
+        const img = document.createElement("img");
+        img.src = src;
+        img.width = 300;
+        img.height = 200;
+        document.body.appendChild(img);
+        console.log(img.src)
+       }
+
+
+    const getData=async ()=>{
+        const res=await axios.get(MY_SERVER);
+        let tableHTML = "<table class='table'><thead><tr><th>Name</th><th>Age</th><th>email</th><th>image</th><th>id</th></tr></thead><tbody>";
+        tableHTML += res.data.map(usr => `<tr>
+            <td>${usr.name}</td>
+            <td>${usr.age}</td>
+            <td>${usr.email}</td>
+            <td><img src="${IMG_SRV+usr.image}" width="300" height="200"></td>
+
+            <td>${usr.id}</td>
+            
+          </tr>`).join(" ");
+        tableHTML += "</tbody></table>";
+        display.innerHTML = tableHTML;
+      }
+          getData()
+
+    </script>
+    
+</body>
+
+    
+</html>
+
