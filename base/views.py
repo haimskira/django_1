@@ -4,6 +4,28 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import serializers
 from .models import Task, Student
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes
+
+
+
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+ 
+        # Add custom claims
+        token['username'] = user.username
+        # ...
+ 
+        return token
+ 
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
+
 
 
 class TaskSerializer(serializers.ModelSerializer):
@@ -15,9 +37,10 @@ class StudentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
         fields = '__all__'
-        
-        
+
+
 @api_view(['GET','POST','DELETE','PUT','PATCH'])
+@permission_classes([IsAuthenticated])
 def student_view(req,id=-1):
     if req.method =='GET':
         if id > -1:

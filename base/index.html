@@ -10,22 +10,44 @@
 </head>
 <body>
     <div id="display"></div>
+
+    User Name<input id="sname">
+    age <input id="age">
+    email <input id="email">
+    photo <input type="file" id="photo"></input>
+    <button class="btn btn-success" onclick="addUser()">Add</button>
+
     <script>
-        
+
     const MY_SERVER= "http://127.0.0.1:8000/student/"
-    const IMG_SRV= "http://127.0.0.1:8000/"
+    const IMG_SRV= "http://127.0.0.1:8000"
 
     axios.get(MY_SERVER).then(res => console.log(res.data));
 
+    const delUser=(id)=>{
+        axios.delete(MY_SERVER + id)
+        getData();
+    }
+    const updUser=(id)=>{
+        console.log(id)
+        axios.put(MY_SERVER,{name:sname.value, age:age.value})
+        getData();
+    }
+    const addUser=()=>{
+        axios.post(MY_SERVER,{name:sname.value, age:age.value,email:email.value,photo:photo.value})
+        getData();
+    }
+    // 'http://127.0.0.1:8000/images/'
     const getData=async ()=>{
         const res=await axios.get(MY_SERVER);
-        let tableHTML = "<table class='table'><thead><tr><th>Name</th><th>Age</th><th>email</th><th>image</th><th>id</th></tr></thead><tbody>";
+        let tableHTML = "<table class='table'><thead><tr><th>Name</th><th>Age</th><th>email</th><th>image</th><th>option</th><th></th><th>id</th></tr></thead><tbody>";
         tableHTML += res.data.map(usr => `<tr>
             <td>${usr.name}</td>
             <td>${usr.age}</td>
             <td>${usr.email}</td>
             <td><img src="${IMG_SRV+usr.image}" width="300" height="200"></td>
-
+            <td><button class="btn btn-danger" onClick='delUser(${usr.id})'>delete</button></td>
+            <td><button class="btn btn-primary" onClick='updUser(${usr.id})'>update</button></td>
             <td>${usr.id}</td>
             
           </tr>`).join(" ");
